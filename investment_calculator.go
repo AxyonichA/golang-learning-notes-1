@@ -9,6 +9,10 @@ import (
 	"fmt"
 	"math"
 )
+
+
+const inflationRate = 2.5
+
 func main() {
 	// 1 Способ.
 	/*
@@ -35,20 +39,25 @@ func main() {
 
 	// 3 Способ.
 	// ещё более простой путь - сразу присвоить переменным значения с плавающей запятой, однако это делает код менее читабельным >>
-	const inflationRate = 2.5
 	investmentAmount, years, expectedReturnRate := 1000.0, 10.0, 5.5
 
-	fmt.Print("Investment Amount: ")
+	// fmt.Print("Investment Amount: ")
+	outputText("Investment Amount: ")
 	fmt.Scan(&investmentAmount) // ожидаёт ввод в терминале
 
-	fmt.Print("Expected Return Rate: ")
+	// fmt.Print("Expected Return Rate: ")
+	outputText("Expected Return Rate: ")
 	fmt.Scan(&expectedReturnRate) // ожидаёт ввод в терминале
 
-	fmt.Print("Investment Horizon: ")
+	// fmt.Print("Investment Horizon: ")
+	outputText("Investment Horizon: ")
 	fmt.Scan(&years) // ожидаёт ввод в терминале
 	
-	futureValue := investmentAmount * math.Pow(1 + expectedReturnRate / 100, years)
-	futureRealValue := futureValue / math.Pow(1 + inflationRate/100, years)
+	// futureValue := investmentAmount * math.Pow(1 + expectedReturnRate / 100, years)
+	// futureRealValue := futureValue / math.Pow(1 + inflationRate/100, years)
+	futureValue, futureRealValue := calculateFutureValue(investmentAmount, expectedReturnRate, years)
+
+
 
 	// fmt.Println("Future Value: ", futureValue)
 	// fmt.Println("Future Value (adjusted for inflation): ", futureRealValue)
@@ -60,10 +69,15 @@ func main() {
 }
 
 
+func outputText(text string) {
+	fmt.Print(text)
+}
 
-
-
-
+func calculateFutureValue(investmentAmount, expectedReturnRate, years float64) (fv float64, frv float64) {
+	fv = investmentAmount * math.Pow(1 + expectedReturnRate / 100, years)
+	frv = fv / math.Pow(1 + inflationRate/100, years)
+	return fv, frv
+}
 
 
 // go mod init example.com/investment-calculator - инициализирует модуль
