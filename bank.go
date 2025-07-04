@@ -2,35 +2,14 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"errors"
+	"example.com/bank/fileops" //импортируем пакет, функции должны быть с большой буквы
+	"github.com/Pallinder/go-randomdata"
 )
 
 const accountBalanceFile = "balance.txt"
 
-func getBalanceFromFile() (float64, error) {
-	data, err := os.ReadFile(accountBalanceFile)
-
-	if err != nil {
-		return 1000, errors.New("Balance file not found")
-	}
-	balanceText := string(data) // байты в строку
-	balance, err :=strconv.ParseFloat(balanceText, 64) // строку в число с плавающей точкой
-	
-	if err != nil {
-		return 1000, errors.New("Invalid balance format")
-	}
-
-	return balance, nil
-}
-func writeBalanceToFile(balance float64) {
-	balanceText := fmt.Sprint(balance)
-	os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
-}
-
 func main() {
-	var accountBalance, err = getBalanceFromFile()
+	var accountBalance, err = fileops.GetFloatFromFile(accountBalanceFile)
 
 	if err != nil {
 		fmt.Println("ERROR")
@@ -40,15 +19,10 @@ func main() {
 	}
 
 	fmt.Println("Welcome to Go Bank!")
+	fmt.Println("Reach us 24/7: ", randomdata.PhoneNumber())
 	// for i := 0; i < 2; i++ 
 	for {
-
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check balance")
-		fmt.Println("2. Deposit money")
-		fmt.Println("3. Withdraw money")
-		fmt.Println("4. Exit")
-		
+		presentOptions()
 		var choise int
 		fmt.Print("Your choise: ")
 		fmt.Scan(&choise)
@@ -77,7 +51,7 @@ func main() {
 			accountBalance += depositAmount
 	
 			fmt.Println("Balance updated! New amount: ", accountBalance)
-			writeBalanceToFile(accountBalance) 
+			fileops.WriteFloatToFile(accountBalance, accountBalanceFile) 
 		case 3:
 			var withdrawAmount float64
 	
@@ -96,12 +70,11 @@ func main() {
 			accountBalance -= withdrawAmount
 	
 			fmt.Println("Balance updated! New amount: ", accountBalance)
-			writeBalanceToFile(accountBalance)
+			fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
 		default:
 			fmt.Println("Goodbye!")
 			fmt.Print("Thanks for choosing our bank")
 			return // stops the function, next code is unreachable
 		}
 	}
-
 }
